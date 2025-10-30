@@ -5,12 +5,18 @@ import { Header } from "@/src/components";
 import { Layout, Button, Card, Typography, Space, Row, Col, ConfigProvider } from 'antd';
 import { PlayCircleOutlined, LoginOutlined, UserAddOutlined, SettingOutlined } from '@ant-design/icons';
 import { theme } from '@/src/theme';
+import { useRouter } from 'next/navigation';
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;
 
 export default function Home() {
   const { t } = useI18n();
+  const router = useRouter();
+
+  const handleStartGame = () => {
+    router.push('/Lobby');
+  };
 
   return (
     <ConfigProvider theme={theme}>
@@ -119,6 +125,7 @@ export default function Home() {
                     type="primary"
                     size="large"
                     icon={<PlayCircleOutlined />}
+                    onClick={handleStartGame}
                     style={{
                       width: '100%',
                       height: 'clamp(48px, 12vw, 56px)',
