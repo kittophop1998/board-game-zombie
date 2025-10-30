@@ -51,8 +51,8 @@ export default function LobbyPage() {
   };
 
   const handleJoinRoom = (roomId: string) => {
-    // TODO: Implement join room functionality
-    console.log(`Joining room ${roomId}...`);
+    // Navigate to the Room page with the room ID
+    router.push(`/Room?id=${roomId}`);
   };
 
   const handleBackToHome = () => {
