@@ -30,7 +30,22 @@
     "score": "คะแนน",
     "health": "พลังชีวิต",
     "weapons": "อาวุธ",
-    "zombies": "ซอมบี้"
+    "zombies": "ซอมบี้",
+    "currentTurn": "ตาปัจจุบัน",
+    "opponents": "คู่ต่อสู้",
+    "tableArea": "พื้นที่โต๊ะ",
+    "deck": "สำรับไพ่",
+    "discard": "ไพ่ทิ้ง",
+    "yourHand": "ไพ่ในมือคุณ",
+    "playCards": "เล่นไพ่ที่เลือก",
+    "useVaccine": "ใช้วัคซีน",
+    "useGun": "ใช้ปืน",
+    "cardCount": "ใบ",
+    "infected": "ติดเชื้อ",
+    "human": "มนุษย์",
+    "immune": "มีภูมิคุ้มกัน",
+    "cardsBeingPlayed": "กำลังเล่นไพ่...",
+    "cardAnimations": "แอนิเมชันไพ่เกิดขึ้นที่นี่"
   },
   "settings": {
     "settings": "ตั้งค่า",

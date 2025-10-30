@@ -30,7 +30,22 @@
     "score": "Score",
     "health": "Health",
     "weapons": "Weapons",
-    "zombies": "Zombies"
+    "zombies": "Zombies",
+    "currentTurn": "Current Turn",
+    "opponents": "Opponents",
+    "tableArea": "TABLE AREA",
+    "deck": "Deck",
+    "discard": "Discard",
+    "yourHand": "Your Hand",
+    "playCards": "Play Selected Cards",
+    "useVaccine": "Use Vaccine", 
+    "useGun": "Use Gun",
+    "cardCount": "cards",
+    "infected": "Infected",
+    "human": "Human",
+    "immune": "Immune",
+    "cardsBeingPlayed": "Cards are being played...",
+    "cardAnimations": "Card animations happen here"
   },
   "settings": {
     "settings": "Settings",
