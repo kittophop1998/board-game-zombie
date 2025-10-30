@@ -1,0 +1,398 @@
+/* Zombie Board Game - Global Styles */
+
+/* CSS Custom Properties */
+:root {
+  --color-primary: #00ff88;
+  --color-primary-hover: #00cc6a;
+  --color-secondary: #ff00ff;
+  --color-success: #00ff88;
+  --color-warning: #ffaa00;
+  --color-error: #ff0066;
+  --color-info: #00aaff;
+  
+  --bg-base: #0a0a0f;
+  --bg-container: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-tertiary: #0f3460;
+  
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-tertiary: #808080;
+  --text-disabled: #4d4d4d;
+  
+  --border-base: #333366;
+  --border-secondary: #00ff88;
+  --border-tertiary: #ff00ff;
+  
+  --shadow-primary: 0 0 20px rgba(0, 255, 136, 0.5);
+  --shadow-secondary: 0 0 20px rgba(255, 0, 255, 0.5);
+  --shadow-danger: 0 0 20px rgba(255, 0, 102, 0.5);
+  
+  --zombie-green: #00ff88;
+  --infection-purple: #ff00ff;
+  --blood-red: #ff0066;
+  
+  --font-family: "Orbitron", "Roboto", "Inter", sans-serif;
+  --font-family-code: "Fira Code", "JetBrains Mono", monospace;
+  
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-sm: 4px;
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  
+  /* Subtle background pattern for texture */
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(0, 255, 136, 0.08) 1px, transparent 0);
+  background-size: 20px 20px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-container);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+  box-shadow: var(--shadow-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-hover);
+}
+
+/* Selection styling */
+::selection {
+  background: var(--color-primary);
+  color: var(--bg-base);
+}
+
+/* Focus outline for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Game-specific utility classes */
+.glow-primary {
+  box-shadow: var(--shadow-primary);
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-secondary {
+  box-shadow: var(--shadow-secondary);
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-danger {
+  box-shadow: var(--shadow-danger);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Game card animations */
+.game-card {
+  background: var(--bg-container);
+  border: 1px solid var(--border-base);
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 136, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.game-card:hover {
+  background: var(--bg-secondary);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-2px);
+}
+
+.game-card:hover::before {
+  left: 100%;
+}
+
+/* Zombie-themed text effects */
+.zombie-title {
+  font-family: var(--font-family);
+  font-weight: 700;
+  color: var(--color-primary);
+  text-shadow: var(--shadow-primary);
+  letter-spacing: 1px;
+}
+
+.infection-text {
+  color: var(--infection-purple);
+  text-shadow: var(--shadow-secondary);
+}
+
+.danger-text {
+  color: var(--blood-red);
+  text-shadow: var(--shadow-danger);
+}
+
+/* Loading animations */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 5px var(--color-primary);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--color-primary), 0 0 30px var(--color-primary);
+  }
+  100% {
+    box-shadow: 0 0 5px var(--color-primary);
+  }
+}
+
+.pulse-animation {
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.flicker-animation {
+  animation: flicker 3s infinite;
+}
+
+/* Button enhancements */
+.ant-btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover)) !important;
+  border: none !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-primary-hover), var(--color-primary)) !important;
+  box-shadow: var(--shadow-primary) !important;
+  transform: translateY(-1px);
+}
+
+/* Modal and overlay styling */
+.ant-modal-content {
+  background: var(--bg-container) !important;
+  border: 1px solid var(--border-base);
+  box-shadow: var(--shadow-primary), 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.ant-modal-header {
+  background: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border-base);
+}
+
+.ant-modal-title {
+  color: var(--text-primary) !important;
+  font-weight: 600;
+}
+
+/* Table enhancements */
+.ant-table {
+  background: var(--bg-container);
+}
+
+.ant-table-thead > tr > th {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-base);
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: rgba(0, 255, 136, 0.05) !important;
+}
+
+/* Form styling */
+.ant-form-item-label > label {
+  color: var(--text-primary) !important;
+  font-weight: 500;
+}
+
+.ant-input,
+.ant-input-affix-wrapper {
+  background: var(--bg-container) !important;
+  border-color: var(--border-base) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-input:focus,
+.ant-input-affix-wrapper:focus,
+.ant-input-focused,
+.ant-input-affix-wrapper-focused {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2) !important;
+}
+
+/* Menu styling */
+.ant-menu {
+  background: var(--bg-container) !important;
+  border-right: 1px solid var(--border-base) !important;
+}
+
+.ant-menu-item:hover {
+  background: rgba(0, 255, 136, 0.1) !important;
+}
+
+.ant-menu-item-selected {
+  background: rgba(0, 255, 136, 0.15) !important;
+  color: var(--color-primary) !important;
+}
+
+/* Game-specific components */
+.zombie-counter {
+  background: var(--bg-container);
+  border: 2px solid var(--zombie-green);
+  border-radius: var(--border-radius);
+  padding: 12px;
+  text-align: center;
+  color: var(--zombie-green);
+  font-weight: 600;
+  box-shadow: var(--shadow-primary);
+}
+
+.infection-meter {
+  background: linear-gradient(90deg, var(--bg-base), var(--infection-purple));
+  border-radius: var(--border-radius);
+  height: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.infection-meter::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--shadow-secondary);
+  border-radius: var(--border-radius);
+}
+
+.health-bar {
+  background: var(--bg-base);
+  border: 1px solid var(--border-base);
+  border-radius: var(--border-radius);
+  height: 16px;
+  overflow: hidden;
+}
+
+.health-bar-fill {
+  background: linear-gradient(90deg, var(--color-error), var(--color-warning), var(--color-success));
+  height: 100%;
+  transition: width 0.3s ease;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .game-card {
+    margin: 8px 0;
+  }
+  
+  :root {
+    --border-radius: 6px;
+    --border-radius-lg: 10px;
+    --border-radius-sm: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 12px;
+  }
+  
+  .zombie-title {
+    font-size: 1.2em;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-primary: #00ffaa;
+    --color-secondary: #ff44ff;
+    --text-primary: #ffffff;
+    --bg-base: #000000;
+    --border-base: #666666;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .pulse-animation,
+  .flicker-animation {
+    animation: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .glow-primary,
+  .glow-secondary,
+  .glow-danger {
+    box-shadow: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .game-card {
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+  }
+}
