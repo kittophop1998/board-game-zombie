@@ -101,10 +101,13 @@ export default function RoomPage() {
   const canStartGame = players.length >= 2 && players.every(p => p.isReady || p.isHost);
 
   const handleStartGame = () => {
+    console.log('Start Game clicked');
     if (canStartGame) {
       setGameStarted(true);
-      // TODO: Navigate to game screen or emit start game event
-      console.log('Starting game...');
+      // Navigate to game screen with roomId
+      router.push(`/game/${roomId}`);
+    } else {
+      console.log('Cannot start game. Not all players are ready or insufficient players.');
     }
   };
 
@@ -208,81 +211,64 @@ export default function RoomPage() {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              minHeight: '200px',
-              position: 'relative'
+              padding: '20px',
             }}>
               <div style={{
-                width: '300px',
-                height: '300px',
-                position: 'relative',
-                display: 'flex',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
+                gap: '20px',
                 justifyContent: 'center',
-                alignItems: 'center'
+                width: '100%',
+                maxWidth: '400px',
               }}>
-                {players.map((player, index) => {
-                  const angle = (index * 360) / Math.max(players.length, 4);
-                  const radius = 120;
-                  const x = Math.cos((angle - 90) * Math.PI / 180) * radius;
-                  const y = Math.sin((angle - 90) * Math.PI / 180) * radius;
-
-                  return (
-                    <div
-                      key={player.id}
-                      style={{
-                        position: 'absolute',
-                        left: `calc(50% + ${x}px - 40px)`,
-                        top: `calc(50% + ${y}px - 40px)`,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '8px'
-                      }}
+                {players.map(player => (
+                  <div
+                    key={player.id}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <Badge
+                      dot={player.status === 'online'}
+                      status={player.status === 'online' ? 'success' : player.status === 'away' ? 'warning' : 'default'}
+                      offset={[-8, 8]}
                     >
+                      <Avatar
+                        size={64}
+                        icon={<UserOutlined />}
+                        style={{
+                          backgroundColor: getPlayerStatusColor(player),
+                          border: `3px solid ${player.isHost ? '#faad14' : player.isReady ? '#52c41a' : '#1890ff'}`,
+                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+                        }}
+                      />
+                    </Badge>
+
+                    <Text style={{ color: '#fff', fontSize: '12px' }}>
+                      {player.name}
+                      {player.isHost && (
+                        <CrownOutlined style={{ marginLeft: '4px', color: '#faad14' }} />
+                      )}
+                    </Text>
+
+                    {!player.isHost && (
                       <Badge
-                        dot={player.status === 'online'}
-                        status={player.status === 'online' ? 'success' : player.status === 'away' ? 'warning' : 'default'}
-                        offset={[-8, 8]}
-                      >
-                        <Avatar
-                          size={64}
-                          icon={<UserOutlined />}
-                          style={{
-                            backgroundColor: getPlayerStatusColor(player),
-                            border: `3px solid ${player.isHost ? '#faad14' : player.isReady ? '#52c41a' : '#1890ff'}`,
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-                          }}
-                        />
-                      </Badge>
-
-                      <div style={{ textAlign: 'center' }}>
-                        <Text style={{
-                          color: '#fff',
-                          fontSize: '12px',
-                          display: 'block',
-                          marginBottom: '4px'
-                        }}>
-                          {player.name}
-                          {player.isHost && (
-                            <CrownOutlined style={{ marginLeft: '4px', color: '#faad14' }} />
-                          )}
-                        </Text>
-
-                        {!player.isHost && (
-                          <Badge
-                            status={player.isReady ? 'success' : 'processing'}
-                            text={
-                              <span style={{ color: player.isReady ? '#52c41a' : '#faad14', fontSize: '11px' }}>
-                                {player.isReady ? 'Ready' : 'Not Ready'}
-                              </span>
-                            }
-                          />
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                        status={player.isReady ? 'success' : 'processing'}
+                        text={
+                          <span style={{ color: player.isReady ? '#52c41a' : '#faad14', fontSize: '11px' }}>
+                            {player.isReady ? 'Ready' : 'Not Ready'}
+                          </span>
+                        }
+                      />
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
+
 
             {/* Status and Actions */}
             <Divider style={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />

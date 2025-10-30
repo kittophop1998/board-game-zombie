@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Badge, Avatar, Space, Row, Col, Typography } from 'antd';
 import { HeartOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { useParams, useRouter } from 'next/navigation';
 import '../game.css';
 
 const { Title, Text } = Typography;
@@ -34,6 +35,9 @@ interface GameState {
 }
 
 export default function GamePage() {
+    const params = useParams();
+    const router = useRouter();
+    const roomId = params.id as string;
 
     // Mock game state - in real app this would come from WebSocket/API
     const [gameState, setGameState] = useState<GameState>({
@@ -85,6 +89,15 @@ export default function GamePage() {
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
+
+    // Log roomId when component mounts
+    useEffect(() => {
+        console.log('Game started for Room ID:', roomId);
+        // Here you can add logic to:
+        // 1. Connect to WebSocket for this specific room
+        // 2. Load game state from API using roomId
+        // 3. Initialize game data based on room settings
+    }, [roomId]);
 
     // Get status badge color and icon
     const getStatusBadge = (status: Player['status'], hasGun: boolean) => {
@@ -213,12 +226,27 @@ export default function GamePage() {
         // Mobile Layout (Portrait)
         return (
             <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
-                {/* Current Turn Header */}
+                {/* Game Header */}
                 <Card className="mb-4 bg-gray-800 border-gray-600">
-                    <div className="text-center">
-                        <Title level={4} className="text-white mb-2">
-                            Turn: {gameState.currentPlayer} 🧑 (Human)
-                        </Title>
+                    <div className="flex justify-between items-center">
+                        <div className="text-center flex-1">
+                            <Title level={4} className="text-white mb-1">
+                                Room #{roomId} - 🧟 Zombie Game
+                            </Title>
+                            <Title level={5} className="text-white mb-0">
+                                Turn: {gameState.currentPlayer} 🧑 (Human)
+                            </Title>
+                        </div>
+                        <Button 
+                            onClick={() => router.push(`/lobby/room/${roomId}`)}
+                            style={{
+                                background: 'rgba(255, 77, 79, 0.2)',
+                                borderColor: '#ff4d4f',
+                                color: '#fff'
+                            }}
+                        >
+                            Leave Game
+                        </Button>
                     </div>
                 </Card>
 
@@ -312,13 +340,28 @@ export default function GamePage() {
         <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6">
             <div className="max-w-7xl mx-auto">
 
-                {/* Current Turn Header */}
+                {/* Game Header */}
                 <Card className="mb-4 bg-gray-800 border-gray-600">
-                    <Row>
-                        <Col span={24}>
-                            <Title level={3} className="text-white text-center mb-0">
+                    <Row justify="space-between" align="middle">
+                        <Col flex="auto">
+                            <Title level={3} className="text-white text-center mb-1">
+                                Room #{roomId} - 🧟 Zombie Game
+                            </Title>
+                            <Title level={4} className="text-white text-center mb-0">
                                 Turn: {gameState.currentPlayer} 🧑 (Human)
                             </Title>
+                        </Col>
+                        <Col>
+                            <Button 
+                                onClick={() => router.push(`/lobby/room/${roomId}`)}
+                                style={{
+                                    background: 'rgba(255, 77, 79, 0.2)',
+                                    borderColor: '#ff4d4f',
+                                    color: '#fff'
+                                }}
+                            >
+                                Leave Game
+                            </Button>
                         </Col>
                     </Row>
                 </Card>
