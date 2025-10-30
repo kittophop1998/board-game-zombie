@@ -96,9 +96,9 @@ export default function LobbyPage() {
                   }}>
                     🧟‍♂️
                   </div>
-                  <Title 
-                    level={2} 
-                    className="font-heading" 
+                  <Title
+                    level={2}
+                    className="font-heading"
                     style={{
                       margin: 0,
                       fontSize: 'clamp(24px, 6vw, 32px)',
@@ -150,9 +150,9 @@ export default function LobbyPage() {
 
                 {/* Active Rooms Section */}
                 <div style={{ marginBottom: 'clamp(16px, 4vw, 24px)' }}>
-                  <Title 
-                    level={3} 
-                    className="font-heading" 
+                  <Title
+                    level={3}
+                    className="font-heading"
                     style={{
                       fontSize: 'clamp(18px, 4.5vw, 24px)',
                       marginBottom: 'clamp(12px, 3vw, 16px)',
@@ -198,9 +198,9 @@ export default function LobbyPage() {
                                 alignItems: 'center',
                                 gap: 'clamp(8px, 2vw, 12px)'
                               }}>
-                                <Text 
-                                  strong 
-                                  style={{ 
+                                <Text
+                                  strong
+                                  style={{
                                     fontSize: 'clamp(14px, 3.5vw, 16px)',
                                     color: room.status === 'full' ? 'var(--color-text-disabled)' : 'var(--color-text-primary)'
                                   }}
@@ -210,10 +210,10 @@ export default function LobbyPage() {
                                 <Badge
                                   count={`${room.currentPlayers}/${room.maxPlayers} Players`}
                                   style={{
-                                    backgroundColor: room.status === 'full' 
-                                      ? 'var(--color-error)' 
-                                      : room.currentPlayers === room.maxPlayers - 1 
-                                        ? 'var(--color-warning)' 
+                                    backgroundColor: room.status === 'full'
+                                      ? 'var(--color-error)'
+                                      : room.currentPlayers === room.maxPlayers - 1
+                                        ? 'var(--color-warning)'
                                         : 'var(--color-success)',
                                     fontSize: 'clamp(10px, 2.5vw, 12px)'
                                   }}
