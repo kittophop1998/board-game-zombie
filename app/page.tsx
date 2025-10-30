@@ -15,7 +15,7 @@ export default function Home() {
   const router = useRouter();
 
   const handleStartGame = () => {
-    router.push('/Lobby');
+    router.push('/lobby');
   };
 
   return (

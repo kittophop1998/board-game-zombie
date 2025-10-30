@@ -52,7 +52,7 @@ export default function LobbyPage() {
 
   const handleJoinRoom = (roomId: string) => {
     // Navigate to the Room page with the room ID
-    router.push(`/Room?id=${roomId}`);
+    router.push(`/lobby/room/${roomId}`);
   };
 
   const handleBackToHome = () => {

@@ -1,29 +1,29 @@
 "use client";
 
 import { Header } from "@/src/components";
-import { 
-  Layout, 
-  Button, 
-  Card, 
-  Typography, 
-  Row, 
-  Col, 
-  ConfigProvider, 
-  Avatar, 
+import {
+  Layout,
+  Button,
+  Card,
+  Typography,
+  Row,
+  Col,
+  ConfigProvider,
+  Avatar,
   Badge,
   Divider,
   List,
   Input
 } from 'antd';
-import { 
-  CrownOutlined, 
-  UserOutlined, 
+import {
+  CrownOutlined,
+  UserOutlined,
   PlayCircleOutlined,
   CheckCircleOutlined,
   MessageOutlined
 } from '@ant-design/icons';
 import { theme } from '@/src/theme';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useState } from 'react';
 
 const { Content } = Layout;
@@ -49,9 +49,9 @@ interface ChatMessage {
 
 export default function RoomPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const roomId = searchParams.get('id') || '124';
-  
+  const params = useParams();
+  const roomId = params.id as string;
+
   const [isHost] = useState(true); // Mock: current user is host
   const [gameStarted, setGameStarted] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
@@ -60,7 +60,7 @@ export default function RoomPage() {
       id: '1',
       playerId: 'system',
       playerName: 'System',
-      message: 'Welcome to Room #124! Waiting for more players to join.',
+      message: `Welcome to Room #${roomId}! Waiting for more players to join.`,
       timestamp: new Date(),
       type: 'system'
     }
@@ -129,7 +129,7 @@ export default function RoomPage() {
   };
 
   const handleLeaveRoom = () => {
-    router.push('/Lobby');
+    router.push('/lobby');
   };
 
   const getPlayerStatusColor = (player: Player) => {
@@ -150,11 +150,11 @@ export default function RoomPage() {
     <ConfigProvider theme={theme}>
       <Layout style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
         <Header />
-        
+
         <Content style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           {/* Room Header */}
-          <Card 
-            style={{ 
+          <Card
+            style={{
               marginBottom: '24px',
               background: 'rgba(255, 255, 255, 0.05)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -164,16 +164,16 @@ export default function RoomPage() {
             <Row justify="space-between" align="middle">
               <Col>
                 <Title level={2} style={{ color: '#fff', margin: 0 }}>
-                  Room: #{roomId} 
+                  Room: #{roomId}
                   <span style={{ marginLeft: '16px', fontSize: '16px', color: '#b37feb' }}>
                     🧟 Zombie Board Game
                   </span>
                 </Title>
               </Col>
               <Col>
-                <Button 
+                <Button
                   onClick={handleLeaveRoom}
-                  style={{ 
+                  style={{
                     background: 'rgba(255, 77, 79, 0.2)',
                     borderColor: '#ff4d4f',
                     color: '#fff'
@@ -186,27 +186,27 @@ export default function RoomPage() {
           </Card>
 
           {/* Players Section */}
-          <Card 
+          <Card
             title={
               <span style={{ color: '#fff', fontSize: '18px' }}>
                 Players ({players.length}/4)
               </span>
             }
-            style={{ 
+            style={{
               marginBottom: '24px',
               background: 'rgba(255, 255, 255, 0.05)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               backdropFilter: 'blur(10px)'
             }}
-            headStyle={{ 
+            headStyle={{
               background: 'rgba(255, 255, 255, 0.1)',
               borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
             }}
           >
             {/* Players Circle */}
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
               alignItems: 'center',
               minHeight: '200px',
               position: 'relative'
@@ -224,7 +224,7 @@ export default function RoomPage() {
                   const radius = 120;
                   const x = Math.cos((angle - 90) * Math.PI / 180) * radius;
                   const y = Math.sin((angle - 90) * Math.PI / 180) * radius;
-                  
+
                   return (
                     <div
                       key={player.id}
@@ -253,10 +253,10 @@ export default function RoomPage() {
                           }}
                         />
                       </Badge>
-                      
+
                       <div style={{ textAlign: 'center' }}>
-                        <Text style={{ 
-                          color: '#fff', 
+                        <Text style={{
+                          color: '#fff',
                           fontSize: '12px',
                           display: 'block',
                           marginBottom: '4px'
@@ -266,9 +266,9 @@ export default function RoomPage() {
                             <CrownOutlined style={{ marginLeft: '4px', color: '#faad14' }} />
                           )}
                         </Text>
-                        
+
                         {!player.isHost && (
-                          <Badge 
+                          <Badge
                             status={player.isReady ? 'success' : 'processing'}
                             text={
                               <span style={{ color: player.isReady ? '#52c41a' : '#faad14', fontSize: '11px' }}>
@@ -286,10 +286,10 @@ export default function RoomPage() {
 
             {/* Status and Actions */}
             <Divider style={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
-            
+
             <Row justify="center" align="middle" style={{ marginBottom: '16px' }}>
-              <Text style={{ 
-                color: '#fff', 
+              <Text style={{
+                color: '#fff',
                 fontSize: '16px',
                 textAlign: 'center'
               }}>
@@ -338,27 +338,27 @@ export default function RoomPage() {
           </Card>
 
           {/* Chat Section */}
-          <Card 
+          <Card
             title={
               <span style={{ color: '#fff', fontSize: '18px' }}>
                 <MessageOutlined style={{ marginRight: '8px' }} />
                 Room Chat
               </span>
             }
-            style={{ 
+            style={{
               background: 'rgba(255, 255, 255, 0.05)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               backdropFilter: 'blur(10px)'
             }}
-            headStyle={{ 
+            headStyle={{
               background: 'rgba(255, 255, 255, 0.1)',
               borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
             }}
           >
             {/* Chat Messages */}
-            <div style={{ 
-              height: '200px', 
-              overflowY: 'auto', 
+            <div style={{
+              height: '200px',
+              overflowY: 'auto',
               marginBottom: '16px',
               padding: '8px',
               background: 'rgba(0, 0, 0, 0.2)',
@@ -370,7 +370,7 @@ export default function RoomPage() {
                 renderItem={(item) => (
                   <List.Item style={{ border: 'none', padding: '4px 0' }}>
                     <Text style={{ color: '#fff', fontSize: '14px' }}>
-                      <span style={{ 
+                      <span style={{
                         color: item.type === 'system' ? '#faad14' : '#1890ff',
                         fontWeight: 'bold'
                       }}>
@@ -401,8 +401,8 @@ export default function RoomPage() {
                 />
               </Col>
               <Col>
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   onClick={handleSendMessage}
                   disabled={!chatMessage.trim()}
                 >
