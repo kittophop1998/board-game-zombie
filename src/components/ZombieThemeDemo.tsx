@@ -17,13 +17,23 @@ interface ZombieThemeDemoProps {
 export const ZombieThemeDemo: React.FC<ZombieThemeDemoProps> = ({ className }) => {
   return (
     <div className={`zombie-theme-demo ${className || ''}`} style={{ padding: '24px' }}>
-      <Title level={2} className="zombie-title" style={{ textAlign: 'center', marginBottom: '32px' }}>
+      <Title level={2} className="zombie-title font-heading" style={{ 
+        textAlign: 'center', 
+        marginBottom: '32px',
+        fontFamily: 'var(--font-bebas)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
+      }}>
         🧟‍♂️ Zombie Theme Components Demo 🧟‍♀️
       </Title>
 
       {/* Color Palette Demo */}
       <Card className="game-card glow-primary" style={{ marginBottom: '24px' }}>
-        <Title level={4} className="zombie-title">Color Palette</Title>
+        <Title level={4} className="zombie-title font-heading" style={{ 
+          fontFamily: 'var(--font-bebas)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
+        }}>Color Palette</Title>
         <Space wrap size="large">
           <div style={{ textAlign: 'center' }}>
             <div style={{
@@ -63,7 +73,11 @@ export const ZombieThemeDemo: React.FC<ZombieThemeDemoProps> = ({ className }) =
 
       {/* Buttons Demo */}
       <Card className="game-card" style={{ marginBottom: '24px' }}>
-        <Title level={4} className="zombie-title">Interactive Buttons</Title>
+        <Title level={4} className="zombie-title font-heading" style={{ 
+          fontFamily: 'var(--font-bebas)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
+        }}>Interactive Buttons</Title>
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
           <Button type="primary" size="large" icon={<PlayCircleOutlined />} className="glow-primary">
             🎮 Start Zombie Hunt
@@ -87,7 +101,11 @@ export const ZombieThemeDemo: React.FC<ZombieThemeDemoProps> = ({ className }) =
 
       {/* Game Stats Demo */}
       <Card className="game-card" style={{ marginBottom: '24px' }}>
-        <Title level={4} className="zombie-title">Game Statistics</Title>
+        <Title level={4} className="zombie-title font-heading" style={{ 
+          fontFamily: 'var(--font-bebas)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
+        }}>Game Statistics</Title>
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
@@ -119,7 +137,11 @@ export const ZombieThemeDemo: React.FC<ZombieThemeDemoProps> = ({ className }) =
 
       {/* Progress Bars Demo */}
       <Card className="game-card" style={{ marginBottom: '24px' }}>
-        <Title level={4} className="zombie-title">Health & Status Bars</Title>
+        <Title level={4} className="zombie-title font-heading" style={{ 
+          fontFamily: 'var(--font-bebas)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
+        }}>Health & Status Bars</Title>
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
           <div>
             <Text className="text-zombie-primary">Health: </Text>
@@ -156,7 +178,11 @@ export const ZombieThemeDemo: React.FC<ZombieThemeDemoProps> = ({ className }) =
 
       {/* Tags and Badges Demo */}
       <Card className="game-card" style={{ marginBottom: '24px' }}>
-        <Title level={4} className="zombie-title">Game Tags & Status</Title>
+        <Title level={4} className="zombie-title font-heading" style={{ 
+          fontFamily: 'var(--font-bebas)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
+        }}>Game Tags & Status</Title>
         <Space wrap size="middle">
           <Tag color="var(--zombie-green)" style={{ 
             border: '1px solid var(--zombie-green)',
@@ -199,7 +225,11 @@ export const ZombieThemeDemo: React.FC<ZombieThemeDemoProps> = ({ className }) =
 
       {/* Alerts Demo */}
       <Card className="game-card">
-        <Title level={4} className="zombie-title">Game Alerts</Title>
+        <Title level={4} className="zombie-title font-heading" style={{ 
+          fontFamily: 'var(--font-bebas)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
+        }}>Game Alerts</Title>
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
           <Alert
             message="🧟‍♂️ Zombie Detected!"
