@@ -195,3 +195,27 @@ h6 {
 .font-body {
   font-family: var(--font-inter) !important;
 }
+
+/* Language Switcher Dropdown Styles */
+.language-switcher-dropdown .ant-dropdown-menu {
+  background-color: var(--bg-container) !important;
+  border: 1px solid var(--border-base) !important;
+  border-radius: 6px !important;
+  box-shadow: var(--shadow-primary) !important;
+  padding: 4px !important;
+}
+
+.language-switcher-dropdown .ant-dropdown-menu-item {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+  border-radius: 4px !important;
+  margin: 2px 0 !important;
+}
+
+.language-switcher-dropdown .ant-dropdown-menu-item:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+.language-switcher-dropdown .ant-dropdown-menu-item:active {
+  background-color: var(--bg-hover) !important;
+}
