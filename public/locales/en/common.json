@@ -1,0 +1,56 @@
+{
+  "title": "Zombie Board Game",
+  "navigation": {
+    "home": "Home",
+    "game": "Game",
+    "leaderboard": "Leaderboard",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "forgotPassword": "Forgot Password?"
+  },
+  "game": {
+    "startGame": "Start Game",
+    "joinGame": "Join Game",
+    "createRoom": "Create Room",
+    "roomCode": "Room Code",
+    "players": "Players",
+    "ready": "Ready",
+    "waiting": "Waiting for players...",
+    "yourTurn": "Your Turn",
+    "gameOver": "Game Over",
+    "winner": "Winner",
+    "score": "Score",
+    "health": "Health",
+    "weapons": "Weapons",
+    "zombies": "Zombies"
+  },
+  "settings": {
+    "settings": "Settings",
+    "language": "Language",
+    "sound": "Sound",
+    "music": "Music",
+    "notifications": "Notifications",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "submit": "Submit"
+  }
+}

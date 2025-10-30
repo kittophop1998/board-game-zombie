@@ -1,0 +1,56 @@
+{
+  "title": "เกมกระดานซอมบี้",
+  "navigation": {
+    "home": "หน้าหลัก",
+    "game": "เกม",
+    "leaderboard": "กระดานคะแนน",
+    "profile": "โปรไฟล์",
+    "settings": "ตั้งค่า"
+  },
+  "auth": {
+    "login": "เข้าสู่ระบบ",
+    "logout": "ออกจากระบบ",
+    "register": "สมัครสมาชิก",
+    "email": "อีเมล",
+    "password": "รหัสผ่าน",
+    "username": "ชื่อผู้ใช้",
+    "forgotPassword": "ลืมรหัสผ่าน?"
+  },
+  "game": {
+    "startGame": "เริ่มเกม",
+    "joinGame": "เข้าร่วมเกม",
+    "createRoom": "สร้างห้อง",
+    "roomCode": "รหัสห้อง",
+    "players": "ผู้เล่น",
+    "ready": "พร้อม",
+    "waiting": "รอผู้เล่นเข้าร่วม...",
+    "yourTurn": "ถึงตาของคุณ",
+    "gameOver": "เกมจบ",
+    "winner": "ผู้ชนะ",
+    "score": "คะแนน",
+    "health": "พลังชีวิต",
+    "weapons": "อาวุธ",
+    "zombies": "ซอมบี้"
+  },
+  "settings": {
+    "settings": "ตั้งค่า",
+    "language": "ภาษา",
+    "sound": "เสียงเอฟเฟกต์",
+    "music": "เสียงดนตรี",
+    "notifications": "การแจ้งเตือน",
+    "save": "บันทึก",
+    "cancel": "ยกเลิก"
+  },
+  "common": {
+    "loading": "กำลังโหลด...",
+    "error": "เกิดข้อผิดพลาด",
+    "success": "สำเร็จ",
+    "confirm": "ยืนยัน",
+    "yes": "ใช่",
+    "no": "ไม่",
+    "next": "ถัดไป",
+    "previous": "ก่อนหน้า",
+    "close": "ปิด",
+    "submit": "ส่ง"
+  }
+}
