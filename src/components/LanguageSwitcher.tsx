@@ -43,16 +43,24 @@ export default function LanguageSwitcher({ className = '' }: LanguageSwitcherPro
                 </svg>
             </button>
 
+            {/* Overlay to close dropdown when clicking outside */}
             {isOpen && (
-                <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right bg-white border border-gray-200 rounded-md shadow-lg">
+                <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
+
+            {isOpen && (
+                <div className="absolute right-0 z-20 mt-2 w-48 origin-top-right bg-white border border-gray-200 rounded-md shadow-lg">
                     <div className="py-1">
                         {languages.map((language) => (
                             <button
                                 key={language.code}
                                 onClick={() => handleLanguageChange(language.code)}
                                 className={`w-full flex items-center space-x-3 px-4 py-2 text-sm hover:bg-gray-100 ${i18n.language === language.code
-                                        ? 'bg-indigo-50 text-indigo-700 font-medium'
-                                        : 'text-gray-700'
+                                    ? 'bg-indigo-50 text-indigo-700 font-medium'
+                                    : 'text-gray-700'
                                     }`}
                             >
                                 <span className="text-lg">{language.flag}</span>
@@ -68,14 +76,6 @@ export default function LanguageSwitcher({ className = '' }: LanguageSwitcherPro
                         ))}
                     </div>
                 </div>
-            )}
-
-            {/* Overlay to close dropdown when clicking outside */}
-            {isOpen && (
-                <div
-                    className="fixed inset-0 z-0"
-                    onClick={() => setIsOpen(false)}
-                />
             )}
         </div>
     );
