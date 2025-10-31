@@ -54,6 +54,7 @@ export default function RoomPage() {
 
   const [isHost] = useState(true); // Mock: current user is host
   const [gameStarted, setGameStarted] = useState(false);
+  const [isCurrentPlayerReady, setIsCurrentPlayerReady] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
@@ -112,8 +113,8 @@ export default function RoomPage() {
   };
 
   const handleToggleReady = () => {
-    // TODO: Toggle current player's ready status
-    console.log('Toggle ready status');
+    setIsCurrentPlayerReady(!isCurrentPlayerReady);
+    console.log('Toggle ready status:', !isCurrentPlayerReady);
   };
 
   const handleSendMessage = () => {
@@ -164,26 +165,14 @@ export default function RoomPage() {
               backdropFilter: 'blur(10px)'
             }}
           >
-            <Row justify="space-between" align="middle">
+            <Row justify="center" align="middle">
               <Col>
-                <Title level={2} style={{ color: '#fff', margin: 0 }}>
+                <Title level={2} style={{ color: '#fff', margin: 0, textAlign: 'center' }}>
                   Room: #{roomId}
                   <span style={{ marginLeft: '16px', fontSize: '16px', color: '#b37feb' }}>
                     🧟 Zombie Board Game
                   </span>
                 </Title>
-              </Col>
-              <Col>
-                <Button
-                  onClick={handleLeaveRoom}
-                  style={{
-                    background: 'rgba(255, 77, 79, 0.2)',
-                    borderColor: '#ff4d4f',
-                    color: '#fff'
-                  }}
-                >
-                  Leave Room
-                </Button>
               </Col>
             </Row>
           </Card>
@@ -283,8 +272,51 @@ export default function RoomPage() {
               </Text>
             </Row>
 
-            <Row justify="center" gutter={16}>
-              {isHost ? (
+            {/* Action Buttons */}
+            <Row justify="center" gutter={16} style={{ marginBottom: '16px' }}>
+              {/* Ready Button - for all players */}
+              <Col>
+                <Button
+                  type="primary"
+                  size="large"
+                  icon={<CheckCircleOutlined />}
+                  onClick={handleToggleReady}
+                  style={{
+                    background: isCurrentPlayerReady ? '#52c41a' : '#faad14',
+                    borderColor: isCurrentPlayerReady ? '#52c41a' : '#faad14',
+                    height: '48px',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    minWidth: '140px'
+                  }}
+                >
+                  {isCurrentPlayerReady ? 'READY ✅' : 'NOT READY ⏱️'}
+                </Button>
+              </Col>
+
+              {/* Leave Room Button - for all players */}
+              <Col>
+                <Button
+                  size="large"
+                  onClick={handleLeaveRoom}
+                  style={{
+                    background: 'rgba(255, 77, 79, 0.8)',
+                    borderColor: '#ff4d4f',
+                    color: '#fff',
+                    height: '48px',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    minWidth: '140px'
+                  }}
+                >
+                  LEAVE ROOM
+                </Button>
+              </Col>
+            </Row>
+
+            {/* Host Only Buttons */}
+            {isHost && (
+              <Row justify="center" gutter={16}>
                 <Col>
                   <Button
                     type="primary"
@@ -293,34 +325,19 @@ export default function RoomPage() {
                     onClick={handleStartGame}
                     disabled={!canStartGame}
                     style={{
-                      background: canStartGame ? '#52c41a' : '#8c8c8c',
-                      borderColor: canStartGame ? '#52c41a' : '#8c8c8c',
+                      background: canStartGame ? '#722ed1' : '#8c8c8c',
+                      borderColor: canStartGame ? '#722ed1' : '#8c8c8c',
                       height: '48px',
                       fontSize: '16px',
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
+                      minWidth: '160px'
                     }}
                   >
-                    Start Game
+                    START GAME
                   </Button>
                 </Col>
-              ) : (
-                <Col>
-                  <Button
-                    type="primary"
-                    size="large"
-                    icon={<CheckCircleOutlined />}
-                    onClick={handleToggleReady}
-                    style={{
-                      height: '48px',
-                      fontSize: '16px',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    Toggle Ready
-                  </Button>
-                </Col>
-              )}
-            </Row>
+              </Row>
+            )}
           </Card>
 
           {/* Chat Section */}
