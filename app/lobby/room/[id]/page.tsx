@@ -52,7 +52,7 @@ export default function RoomPage() {
   const params = useParams();
   const roomId = params.id as string;
 
-  const [isHost] = useState(true); // Mock: current user is host
+  const [isHost] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
   const [isCurrentPlayerReady, setIsCurrentPlayerReady] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
@@ -79,7 +79,7 @@ export default function RoomPage() {
     {
       id: '2',
       name: 'Player B',
-      isReady: false,
+      isReady: true,
       isHost: false,
       status: 'online'
     },
@@ -93,7 +93,7 @@ export default function RoomPage() {
     {
       id: '4',
       name: 'Player D',
-      isReady: false,
+      isReady: true,
       isHost: false,
       status: 'away'
     }

@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Badge, Avatar, Space, Row, Col, Typography } from 'antd';
-import { HeartOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { Card, Button, Badge, Avatar, Space, Row, Col, Typography, Modal, message } from 'antd';
+import { HeartOutlined, ThunderboltOutlined, EyeOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
 import '../game.css';
 
@@ -25,6 +25,13 @@ interface GameCard {
     suit?: '♠' | '♥' | '♦' | '♣';
 }
 
+interface PlacedCard {
+    id: string;
+    card: GameCard;
+    isRevealed: boolean;
+    playerId: string;
+}
+
 interface GameState {
     currentPlayer: string;
     players: Player[];
@@ -32,6 +39,10 @@ interface GameState {
     discardCount: number;
     playerHand: GameCard[];
     isAnimating: boolean;
+    gameStarted: boolean;
+    selectedOpponent: string | null;
+    myPlacedCards: PlacedCard[];
+    opponentPlacedCards: PlacedCard[];
 }
 
 export default function GamePage() {
@@ -74,7 +85,11 @@ export default function GamePage() {
             { id: '9', type: 'number', value: '9', suit: '♣' },
             { id: '10', type: 'number', value: 'Q', suit: '♦' }
         ],
-        isAnimating: false
+        isAnimating: false,
+        gameStarted: false,
+        selectedOpponent: null,
+        myPlacedCards: [],
+        opponentPlacedCards: []
     });
 
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
@@ -97,6 +112,12 @@ export default function GamePage() {
         // 1. Connect to WebSocket for this specific room
         // 2. Load game state from API using roomId
         // 3. Initialize game data based on room settings
+        
+        // TODO: Socket.IO connection setup
+        // const socket = io('your-socket-server-url');
+        // socket.emit('joinRoom', { roomId, playerId: 'current-player-id' });
+        // socket.on('cardPlaced', handleOpponentCardPlaced);
+        // socket.on('cardRevealed', handleOpponentCardRevealed);
     }, [roomId]);
 
     // Get status badge color and icon
@@ -119,6 +140,154 @@ export default function GamePage() {
         }
 
         return { color, icon };
+    };
+
+    // Handle opponent selection
+    const handleSelectOpponent = (opponentId: string) => {
+        setGameState(prev => ({
+            ...prev,
+            selectedOpponent: opponentId,
+            gameStarted: true
+        }));
+        message.success('Game started! Select cards and place them on the table.');
+    };
+
+    // Handle placing cards on table (face down)
+    const handlePlaceCards = () => {
+        if (selectedCards.length === 0) {
+            message.warning('Please select at least one card to place.');
+            return;
+        }
+
+        const cardsToPlace = gameState.playerHand.filter(card => 
+            selectedCards.includes(card.id)
+        );
+
+        const placedCards: PlacedCard[] = cardsToPlace.map(card => ({
+            id: `placed-${Date.now()}-${card.id}`,
+            card,
+            isRevealed: false,
+            playerId: 'me'
+        }));
+
+        setGameState(prev => ({
+            ...prev,
+            myPlacedCards: [...prev.myPlacedCards, ...placedCards],
+            playerHand: prev.playerHand.filter(card => !selectedCards.includes(card.id)),
+            isAnimating: true
+        }));
+
+        setSelectedCards([]);
+
+        // Simulate animation completion
+        setTimeout(() => {
+            setGameState(prev => ({ ...prev, isAnimating: false }));
+            message.success('Cards placed on the table (face down)');
+            
+            // TODO: Socket.IO emit
+            // socket.emit('placeCards', { roomId, cards: placedCards });
+        }, 500);
+
+        // Simulate opponent placing cards (for demo)
+        setTimeout(() => {
+            simulateOpponentPlaceCards();
+        }, 2000);
+    };
+
+    // Simulate opponent placing cards (will be replaced by Socket.IO)
+    const simulateOpponentPlaceCards = () => {
+        const mockOpponentCards: PlacedCard[] = [
+            {
+                id: `opp-placed-${Date.now()}-1`,
+                card: { id: 'opp-1', type: 'number', value: '5', suit: '♠' },
+                isRevealed: false,
+                playerId: gameState.selectedOpponent || '1'
+            },
+            {
+                id: `opp-placed-${Date.now()}-2`,
+                card: { id: 'opp-2', type: 'zombie' },
+                isRevealed: false,
+                playerId: gameState.selectedOpponent || '1'
+            }
+        ];
+
+        setGameState(prev => ({
+            ...prev,
+            opponentPlacedCards: [...prev.opponentPlacedCards, ...mockOpponentCards]
+        }));
+
+        message.info('Opponent placed cards on the table!');
+        
+        // TODO: This will be handled by Socket.IO listener
+        // socket.on('cardPlaced', (data) => { ... });
+    };
+
+    // Handle revealing a card (flip it)
+    const handleRevealCard = (placedCardId: string, isMyCard: boolean) => {
+        if (isMyCard) {
+            setGameState(prev => ({
+                ...prev,
+                myPlacedCards: prev.myPlacedCards.map(pc =>
+                    pc.id === placedCardId ? { ...pc, isRevealed: true } : pc
+                )
+            }));
+            message.success('Card revealed!');
+            
+            // TODO: Socket.IO emit
+            // socket.emit('revealCard', { roomId, cardId: placedCardId });
+        } else {
+            setGameState(prev => ({
+                ...prev,
+                opponentPlacedCards: prev.opponentPlacedCards.map(pc =>
+                    pc.id === placedCardId ? { ...pc, isRevealed: true } : pc
+                )
+            }));
+            message.info('Opponent card revealed!');
+        }
+    };
+
+    // Render placed card (face down or face up)
+    const renderPlacedCard = (placedCard: PlacedCard, isMyCard: boolean) => {
+        if (!placedCard.isRevealed) {
+            // Face down card
+            return (
+                <Card
+                    key={placedCard.id}
+                    size="small"
+                    onClick={() => handleRevealCard(placedCard.id, isMyCard)}
+                    className="card-item card-face-down animate-place cursor-pointer hover:shadow-lg transition-all"
+                    style={{
+                        width: isMobile ? 50 : 70,
+                        height: isMobile ? 70 : 100,
+                        minWidth: isMobile ? 50 : 70,
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        borderColor: '#667eea'
+                    }}
+                    bodyStyle={{
+                        padding: isMobile ? '4px' : '8px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%'
+                    }}
+                >
+                    <div style={{ color: 'white', fontSize: isMobile ? '20px' : '30px' }}>
+                        🂠
+                    </div>
+                    <div style={{ color: 'white', fontSize: '10px', marginTop: '4px' }}>
+                        <EyeOutlined />
+                    </div>
+                </Card>
+            );
+        } else {
+            // Face up card (revealed) - with flip animation
+            return (
+                <div key={placedCard.id} className="animate-flip">
+                    {renderCard(placedCard.card, false)}
+                </div>
+            );
+        }
     };
 
     // Render card component
@@ -226,6 +395,35 @@ export default function GamePage() {
         // Mobile Layout (Portrait)
         return (
             <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
+                {/* Opponent Selection Modal */}
+                <Modal
+                    title="Select Your Opponent"
+                    open={!gameState.gameStarted && !gameState.selectedOpponent}
+                    footer={null}
+                    closable={false}
+                    centered
+                >
+                    <div className="space-y-3">
+                        <Text>Choose who you want to play against:</Text>
+                        {gameState.players.map((player) => {
+                            const { color, icon } = getStatusBadge(player.status, player.hasGun);
+                            return (
+                                <Button
+                                    key={player.id}
+                                    block
+                                    size="large"
+                                    onClick={() => handleSelectOpponent(player.id)}
+                                    className="flex items-center justify-start gap-2"
+                                >
+                                    <span style={{ fontSize: '24px' }}>{player.avatar}</span>
+                                    <span>{player.name}</span>
+                                    <Badge count={icon} style={{ backgroundColor: color }} />
+                                </Button>
+                            );
+                        })}
+                    </div>
+                </Modal>
+
                 {/* Game Header */}
                 <Card className="mb-4 bg-gray-800 border-gray-600">
                     <div className="flex justify-between items-center">
@@ -252,28 +450,48 @@ export default function GamePage() {
 
                 {/* Opponents */}
                 <Card className="mb-4 bg-gray-800 border-gray-600">
-                    <Title level={5} className="text-white mb-3">Opponents:</Title>
+                    <Title level={5} className="text-white mb-3">
+                        Opponent: {gameState.selectedOpponent && gameState.players.find(p => p.id === gameState.selectedOpponent)?.name}
+                    </Title>
                     <Space direction="vertical" className="w-full">
-                        {gameState.players.map((player) => {
-                            const { color, icon } = getStatusBadge(player.status, player.hasGun);
-                            return (
-                                <div key={player.id} className="flex items-center justify-between">
-                                    <Space>
-                                        <span style={{ fontSize: '20px' }}>{player.avatar}</span>
-                                        <Text className="text-white">{player.name}</Text>
-                                        <Badge count={icon} style={{ backgroundColor: color }} />
-                                    </Space>
-                                    <Text className="text-gray-300">{player.cardCount} cards</Text>
-                                </div>
-                            );
-                        })}
+                        {gameState.players
+                            .filter(p => p.id === gameState.selectedOpponent)
+                            .map((player) => {
+                                const { color, icon } = getStatusBadge(player.status, player.hasGun);
+                                return (
+                                    <div key={player.id} className="flex items-center justify-between">
+                                        <Space>
+                                            <span style={{ fontSize: '20px' }}>{player.avatar}</span>
+                                            <Text className="text-white">{player.name}</Text>
+                                            <Badge count={icon} style={{ backgroundColor: color }} />
+                                        </Space>
+                                        <Text className="text-gray-300">{player.cardCount} cards</Text>
+                                    </div>
+                                );
+                            })}
                     </Space>
                 </Card>
 
-                {/* Table Area */}
+                {/* Table Area with Placed Cards */}
                 <Card className="mb-4 bg-gray-800 border-gray-600">
                     <Title level={5} className="text-white mb-3 text-center">TABLE AREA</Title>
-                    <div className="flex justify-center gap-8 py-4">
+                    
+                    {/* Opponent's Placed Cards */}
+                    <div className="mb-4 p-3 bg-gray-700 rounded">
+                        <Text className="text-white mb-2 block">Opponent&apos;s Cards:</Text>
+                        <div className="flex flex-wrap gap-2 justify-center min-h-[80px]">
+                            {gameState.opponentPlacedCards.length === 0 ? (
+                                <Text className="text-gray-400 italic">No cards placed yet</Text>
+                            ) : (
+                                gameState.opponentPlacedCards.map(placedCard => 
+                                    renderPlacedCard(placedCard, false)
+                                )
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Deck and Discard */}
+                    <div className="flex justify-center gap-8 py-3 border-y border-gray-600">
                         <div className="text-center">
                             <div className="text-2xl mb-1">🧠</div>
                             <Text className="text-white">Deck [{gameState.deckCount}]</Text>
@@ -281,6 +499,20 @@ export default function GamePage() {
                         <div className="text-center">
                             <div className="text-2xl mb-1">🧟‍♂️</div>
                             <Text className="text-white">Discard [{gameState.discardCount}]</Text>
+                        </div>
+                    </div>
+
+                    {/* My Placed Cards */}
+                    <div className="mt-4 p-3 bg-blue-900 bg-opacity-30 rounded">
+                        <Text className="text-white mb-2 block">Your Placed Cards:</Text>
+                        <div className="flex flex-wrap gap-2 justify-center min-h-[80px]">
+                            {gameState.myPlacedCards.length === 0 ? (
+                                <Text className="text-gray-400 italic">No cards placed yet</Text>
+                            ) : (
+                                gameState.myPlacedCards.map(placedCard => 
+                                    renderPlacedCard(placedCard, true)
+                                )
+                            )}
                         </div>
                     </div>
                 </Card>
@@ -305,11 +537,21 @@ export default function GamePage() {
                         type="primary"
                         size="large"
                         block
+                        onClick={handlePlaceCards}
+                        disabled={selectedCards.length === 0 || gameState.isAnimating || !gameState.gameStarted}
+                        loading={gameState.isAnimating}
+                    >
+                        Place Selected Cards on Table ({selectedCards.length})
+                    </Button>
+
+                    <Button
+                        size="large"
+                        block
                         onClick={handlePlayCards}
                         disabled={selectedCards.length === 0 || gameState.isAnimating}
                         loading={gameState.isAnimating}
                     >
-                        Play Selected Cards ({selectedCards.length})
+                        Play to Discard ({selectedCards.length})
                     </Button>
 
                     <div className="flex gap-2">
@@ -339,6 +581,40 @@ export default function GamePage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6">
             <div className="max-w-7xl mx-auto">
+                {/* Opponent Selection Modal */}
+                <Modal
+                    title="Select Your Opponent"
+                    open={!gameState.gameStarted && !gameState.selectedOpponent}
+                    footer={null}
+                    closable={false}
+                    centered
+                    width={600}
+                >
+                    <div className="space-y-3">
+                        <Text className="text-lg">Choose who you want to play against:</Text>
+                        <Row gutter={[16, 16]}>
+                            {gameState.players.map((player) => {
+                                const { color, icon } = getStatusBadge(player.status, player.hasGun);
+                                return (
+                                    <Col span={12} key={player.id}>
+                                        <Button
+                                            block
+                                            size="large"
+                                            onClick={() => handleSelectOpponent(player.id)}
+                                            className="h-24 flex flex-col items-center justify-center gap-2"
+                                        >
+                                            <span style={{ fontSize: '32px' }}>{player.avatar}</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-bold">{player.name}</span>
+                                                <Badge count={icon} style={{ backgroundColor: color }} />
+                                            </div>
+                                        </Button>
+                                    </Col>
+                                );
+                            })}
+                        </Row>
+                    </div>
+                </Modal>
 
                 {/* Game Header */}
                 <Card className="mb-4 bg-gray-800 border-gray-600">
@@ -349,6 +625,7 @@ export default function GamePage() {
                             </Title>
                             <Title level={4} className="text-white text-center mb-0">
                                 Turn: {gameState.currentPlayer} 🧑 (Human)
+                                {gameState.selectedOpponent && ` vs ${gameState.players.find(p => p.id === gameState.selectedOpponent)?.name}`}
                             </Title>
                         </Col>
                         <Col>
@@ -367,36 +644,56 @@ export default function GamePage() {
                 </Card>
 
                 {/* Opponents Section */}
-                <Card className="mb-4 bg-gray-800 border-gray-600">
-                    <Title level={4} className="text-white mb-4">Opponents:</Title>
-                    <Row gutter={16}>
-                        {gameState.players.map((player) => {
-                            const { color, icon } = getStatusBadge(player.status, player.hasGun);
-                            return (
-                                <Col key={player.id} xs={24} md={12} lg={8} className="mb-3">
-                                    <div className="flex items-center gap-3 p-3 bg-gray-700 rounded-lg">
-                                        <Avatar size={48} style={{ backgroundColor: color }}>
-                                            {player.avatar}
-                                        </Avatar>
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2">
-                                                <Text strong className="text-white">{player.name}</Text>
-                                                <Badge count={icon} style={{ backgroundColor: color }} />
+                {gameState.selectedOpponent && (
+                    <Card className="mb-4 bg-gray-800 border-gray-600">
+                        <Title level={4} className="text-white mb-4">Playing Against:</Title>
+                        <Row gutter={16}>
+                            {gameState.players
+                                .filter(p => p.id === gameState.selectedOpponent)
+                                .map((player) => {
+                                    const { color, icon } = getStatusBadge(player.status, player.hasGun);
+                                    return (
+                                        <Col key={player.id} xs={24} md={12} lg={8} className="mb-3">
+                                            <div className="flex items-center gap-3 p-3 bg-gray-700 rounded-lg">
+                                                <Avatar size={48} style={{ backgroundColor: color }}>
+                                                    {player.avatar}
+                                                </Avatar>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <Text strong className="text-white">{player.name}</Text>
+                                                        <Badge count={icon} style={{ backgroundColor: color }} />
+                                                    </div>
+                                                    <Text className="text-gray-300">{player.cardCount} cards</Text>
+                                                </div>
                                             </div>
-                                            <Text className="text-gray-300">{player.cardCount} cards</Text>
-                                        </div>
-                                    </div>
-                                </Col>
-                            );
-                        })}
-                    </Row>
-                </Card>
+                                        </Col>
+                                    );
+                                })}
+                        </Row>
+                    </Card>
+                )}
 
-                {/* Table Area */}
+                {/* Table Area with Placed Cards */}
                 <Card className="mb-4 bg-gray-800 border-gray-600">
                     <Title level={4} className="text-white text-center mb-6">TABLE AREA</Title>
-                    <div className="border-2 border-dashed border-gray-600 rounded-lg p-8 min-h-[200px]">
-                        <Row gutter={32} className="mb-6">
+                    <div className="border-2 border-dashed border-gray-600 rounded-lg p-8 min-h-[400px]">
+                        
+                        {/* Opponent's Placed Cards */}
+                        <div className="mb-6 p-4 bg-gray-700 rounded-lg">
+                            <Title level={5} className="text-white mb-3">Opponent&apos;s Cards:</Title>
+                            <div className="flex flex-wrap gap-3 justify-center min-h-[120px] items-center">
+                                {gameState.opponentPlacedCards.length === 0 ? (
+                                    <Text className="text-gray-400 italic">Waiting for opponent to place cards...</Text>
+                                ) : (
+                                    gameState.opponentPlacedCards.map(placedCard => 
+                                        renderPlacedCard(placedCard, false)
+                                    )
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Deck and Discard */}
+                        <Row gutter={32} className="mb-6 py-4 border-y border-gray-600">
                             <Col span={12} className="text-center">
                                 <div className="text-6xl mb-2">🧠</div>
                                 <Title level={4} className="text-white">Deck [{gameState.deckCount}]</Title>
@@ -407,10 +704,18 @@ export default function GamePage() {
                             </Col>
                         </Row>
 
-                        <div className="text-center">
-                            <Text className="text-gray-400 italic">
-                                {gameState.isAnimating ? '🔄 Cards are being played...' : 'Card animations happen here'}
-                            </Text>
+                        {/* My Placed Cards */}
+                        <div className="mt-6 p-4 bg-blue-900 bg-opacity-30 rounded-lg">
+                            <Title level={5} className="text-white mb-3">Your Placed Cards:</Title>
+                            <div className="flex flex-wrap gap-3 justify-center min-h-[120px] items-center">
+                                {gameState.myPlacedCards.length === 0 ? (
+                                    <Text className="text-gray-400 italic">Select cards and place them on the table</Text>
+                                ) : (
+                                    gameState.myPlacedCards.map(placedCard => 
+                                        renderPlacedCard(placedCard, true)
+                                    )
+                                )}
+                            </div>
                         </div>
                     </div>
                 </Card>
@@ -434,7 +739,7 @@ export default function GamePage() {
                 {/* Action Buttons */}
                 <Card className="bg-gray-800 border-gray-600">
                     <Row gutter={16} align="middle">
-                        <Col xs={24} md={8}>
+                        <Col xs={24} md={6}>
                             <Button
                                 size="large"
                                 onClick={handleUseVaccine}
@@ -445,7 +750,7 @@ export default function GamePage() {
                                 💉 Use Vaccine
                             </Button>
                         </Col>
-                        <Col xs={24} md={8}>
+                        <Col xs={24} md={6}>
                             <Button
                                 size="large"
                                 onClick={handleUseGun}
@@ -456,16 +761,27 @@ export default function GamePage() {
                                 🔫 Use Gun
                             </Button>
                         </Col>
-                        <Col xs={24} md={8}>
+                        <Col xs={24} md={6}>
                             <Button
                                 type="primary"
+                                size="large"
+                                onClick={handlePlaceCards}
+                                disabled={selectedCards.length === 0 || gameState.isAnimating || !gameState.gameStarted}
+                                loading={gameState.isAnimating}
+                                block
+                            >
+                                Place on Table ({selectedCards.length})
+                            </Button>
+                        </Col>
+                        <Col xs={24} md={6}>
+                            <Button
                                 size="large"
                                 onClick={handlePlayCards}
                                 disabled={selectedCards.length === 0 || gameState.isAnimating}
                                 loading={gameState.isAnimating}
                                 block
                             >
-                                Play Selected Cards ({selectedCards.length})
+                                Play to Discard ({selectedCards.length})
                             </Button>
                         </Col>
                     </Row>
