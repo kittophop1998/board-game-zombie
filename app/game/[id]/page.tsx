@@ -112,7 +112,7 @@ export default function GamePage() {
         // 1. Connect to WebSocket for this specific room
         // 2. Load game state from API using roomId
         // 3. Initialize game data based on room settings
-        
+
         // TODO: Socket.IO connection setup
         // const socket = io('your-socket-server-url');
         // socket.emit('joinRoom', { roomId, playerId: 'current-player-id' });
@@ -159,7 +159,7 @@ export default function GamePage() {
             return;
         }
 
-        const cardsToPlace = gameState.playerHand.filter(card => 
+        const cardsToPlace = gameState.playerHand.filter(card =>
             selectedCards.includes(card.id)
         );
 
@@ -183,7 +183,7 @@ export default function GamePage() {
         setTimeout(() => {
             setGameState(prev => ({ ...prev, isAnimating: false }));
             message.success('Cards placed on the table (face down)');
-            
+
             // TODO: Socket.IO emit
             // socket.emit('placeCards', { roomId, cards: placedCards });
         }, 500);
@@ -217,7 +217,7 @@ export default function GamePage() {
         }));
 
         message.info('Opponent placed cards on the table!');
-        
+
         // TODO: This will be handled by Socket.IO listener
         // socket.on('cardPlaced', (data) => { ... });
     };
@@ -232,7 +232,7 @@ export default function GamePage() {
                 )
             }));
             message.success('Card revealed!');
-            
+
             // TODO: Socket.IO emit
             // socket.emit('revealCard', { roomId, cardId: placedCardId });
         } else {
@@ -435,7 +435,7 @@ export default function GamePage() {
                                 Turn: {gameState.currentPlayer} 🧑 (Human)
                             </Title>
                         </div>
-                        <Button 
+                        <Button
                             onClick={() => router.push(`/lobby/room/${roomId}`)}
                             style={{
                                 background: 'rgba(255, 77, 79, 0.2)',
@@ -475,7 +475,7 @@ export default function GamePage() {
                 {/* Table Area with Placed Cards */}
                 <Card className="mb-4 bg-gray-800 border-gray-600">
                     <Title level={5} className="text-white mb-3 text-center">TABLE AREA</Title>
-                    
+
                     {/* Opponent's Placed Cards */}
                     <div className="mb-4 p-3 bg-gray-700 rounded">
                         <Text className="text-white mb-2 block">Opponent&apos;s Cards:</Text>
@@ -483,7 +483,7 @@ export default function GamePage() {
                             {gameState.opponentPlacedCards.length === 0 ? (
                                 <Text className="text-gray-400 italic">No cards placed yet</Text>
                             ) : (
-                                gameState.opponentPlacedCards.map(placedCard => 
+                                gameState.opponentPlacedCards.map(placedCard =>
                                     renderPlacedCard(placedCard, false)
                                 )
                             )}
@@ -509,7 +509,7 @@ export default function GamePage() {
                             {gameState.myPlacedCards.length === 0 ? (
                                 <Text className="text-gray-400 italic">No cards placed yet</Text>
                             ) : (
-                                gameState.myPlacedCards.map(placedCard => 
+                                gameState.myPlacedCards.map(placedCard =>
                                     renderPlacedCard(placedCard, true)
                                 )
                             )}
@@ -583,39 +583,40 @@ export default function GamePage() {
             <div className="max-w-7xl mx-auto">
                 {/* Opponent Selection Modal */}
                 <Modal
-                    title="Select Your Opponent"
+                    title={null}
                     open={!gameState.gameStarted && !gameState.selectedOpponent}
                     footer={null}
                     closable={false}
                     centered
-                    width={600}
+                    width={620}
                 >
-                    <div className="space-y-3">
-                        <Text className="text-lg">Choose who you want to play against:</Text>
+                    <div className="text-center space-y-6">
+                        {/* Header */}
+                        <div>
+                            <h2 className="text-2xl font-bold">Select Your Opponent</h2>
+                            <p className="text-gray-500 mt-1">
+                                Choose who you want to play against
+                            </p>
+                        </div>
+
+                        {/* Player list */}
                         <Row gutter={[16, 16]}>
-                            {gameState.players.map((player) => {
-                                const { color, icon } = getStatusBadge(player.status, player.hasGun);
-                                return (
-                                    <Col span={12} key={player.id}>
-                                        <Button
-                                            block
-                                            size="large"
-                                            onClick={() => handleSelectOpponent(player.id)}
-                                            className="h-24 flex flex-col items-center justify-center gap-2"
-                                        >
-                                            <span style={{ fontSize: '32px' }}>{player.avatar}</span>
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-bold">{player.name}</span>
-                                                <Badge count={icon} style={{ backgroundColor: color }} />
-                                            </div>
-                                        </Button>
-                                    </Col>
-                                );
-                            })}
+                            {gameState.players.map((player) => (
+                                <Col span={12} key={player.id}>
+                                    <button
+                                        onClick={() => handleSelectOpponent(player.id)}
+                                        className=" w-full h-28 flex flex-col items-center justify-center border-2 border-gray-300 rounded-lg hover:border-blue-500 transition-colors"
+                                    >
+                                        <span className="text-4xl">{player.avatar}</span>
+                                        <span className="text-lg font-semibold">
+                                            {player.name}
+                                        </span>
+                                    </button>
+                                </Col>
+                            ))}
                         </Row>
                     </div>
                 </Modal>
-
                 {/* Game Header */}
                 <Card className="mb-4 bg-gray-800 border-gray-600">
                     <Row justify="space-between" align="middle">
@@ -629,7 +630,7 @@ export default function GamePage() {
                             </Title>
                         </Col>
                         <Col>
-                            <Button 
+                            <Button
                                 onClick={() => router.push(`/lobby/room/${roomId}`)}
                                 style={{
                                     background: 'rgba(255, 77, 79, 0.2)',
@@ -677,7 +678,7 @@ export default function GamePage() {
                 <Card className="mb-4 bg-gray-800 border-gray-600">
                     <Title level={4} className="text-white text-center mb-6">TABLE AREA</Title>
                     <div className="border-2 border-dashed border-gray-600 rounded-lg p-8 min-h-[400px]">
-                        
+
                         {/* Opponent's Placed Cards */}
                         <div className="mb-6 p-4 bg-gray-700 rounded-lg">
                             <Title level={5} className="text-white mb-3">Opponent&apos;s Cards:</Title>
@@ -685,7 +686,7 @@ export default function GamePage() {
                                 {gameState.opponentPlacedCards.length === 0 ? (
                                     <Text className="text-gray-400 italic">Waiting for opponent to place cards...</Text>
                                 ) : (
-                                    gameState.opponentPlacedCards.map(placedCard => 
+                                    gameState.opponentPlacedCards.map(placedCard =>
                                         renderPlacedCard(placedCard, false)
                                     )
                                 )}
@@ -711,7 +712,7 @@ export default function GamePage() {
                                 {gameState.myPlacedCards.length === 0 ? (
                                     <Text className="text-gray-400 italic">Select cards and place them on the table</Text>
                                 ) : (
-                                    gameState.myPlacedCards.map(placedCard => 
+                                    gameState.myPlacedCards.map(placedCard =>
                                         renderPlacedCard(placedCard, true)
                                     )
                                 )}
